@@ -299,7 +299,7 @@ $(document).ready(function () {
           featuresObject.forEach((element, index) => {
             popUp.insertAdjacentHTML(
               "afterend",
-              `<a  href="${element.properties.link}" style="display:flex; border: 1px solid #f0f0f0; justify-content: space-between; text-decoration: none;" class="popup-wrapper"><h4>${element.properties.title}</h4> <img loading="lazy" class="popup_img" alt src="${element.properties.imgURL}" ></a>`
+              `<a  id="card_link-block" href="${element.properties.link}" style="display:flex; border: 1px solid #f0f0f0; justify-content: space-between; text-decoration: none;" class="popup-wrapper"><h4>${element.properties.title}</h4> <img loading="lazy" class="popup_img" alt src="${element.properties.imgURL}" ></a>`
             );
           });
         } else {
@@ -427,7 +427,7 @@ $(document).ready(function () {
             .setLngLat(e.features[0].geometry.coordinates)
             .setHTML(
               `
-              <a style="text-decoration: none;" href="${e.features[0].properties.link}">
+              <a id='card-link_block' style="text-decoration: none;" href="${e.features[0].properties.link}">
               <h3>${e.features[0].properties.title}</h3>
               <img loading="lazy" class="popup_img" alt src="${e.features[0].properties.imgURL}" >
               </a>
