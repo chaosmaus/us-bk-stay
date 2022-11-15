@@ -7,19 +7,68 @@
 
 <script>
 
-// 1. get map slider list
-// 2. for each map slider do the following:
+    // 1. get map slider list
+    // 2. for each map slider do the following:
     // get slider dots
+    // dots 0 to 4 are active, rest inactive
     // add listener on slide change:
-        //if slide => first hide left arrow
-        // if slide => last, hide right arrow
-        // there will always be 5 active slider dots, the rest will be invisible
+    //if slide => first hide left arrow
+    // if slide => last, hide right arrow
+    // there will always be 5 active slider dots, the rest will be invisible
+    // on arrow click, get w-active
+    // w-active is now in index 1   ->   0 1 0 0 0
 
-let mapCard = $('.map-card');
+    let mapCard = $('#active-map-card');
+    let dotList = mapCard.find('.w-slider-dot');
+    let dotsLength = dotList.length;
+    let previousActive = 0;
+    let dotOnMiddle = false;
+    dotList.each((index, element) => {
+        if ($(element).hasClass('w-active')) {
+            previousActive = index;
+            console.log(`previous active is slide ${index}`)
+        }
+        if (index > 4) $(element).addClass('hidden');
+    })
 
-mapCard.each((index, element) => {
-    
-})
+
+    $('.map-slider_arrow').on('click', (e) => {
+        let clickedButton = $(e.target);
+        if (clickedButton.is('.map-slider_arrow-icon')) clickedButton = clickedButton.parent();
+
+        dotList.each((index, element) => {
+            if ($(element).hasClass('w-active')) {
+                let currentActive = index;
+                console.log(`slide ${index} active`)
+                if ((Math.abs(currentActive - previousActive) === 3) || dotOnMiddle) {
+                    dotOnMiddle = true;
+                    if (clickedButton.hasClass('left')) {
+                        //show right arrow again
+                        //if(index === dotList.length - 1) $('.map-slider_arrow.right').removeClass('hidden');
+                        dotList.eq(index - 3).removeClass('hidden')
+                        dotList.eq(index + 2).addClass('hidden')
+                    } else if (clickedButton.hasClass('right')) {
+                        if (dotList.eq(index + 3).length) {
+                            dotList.eq(index + 2).removeClass('hidden')
+                            dotList.eq(index + 1).removeClass('hidden')
+                            if(dotList.eq(index + 3).hasClass('hidden')) dotList.eq(index - 3).addClass('hidden')
+                            dotList.eq(index - 2).addClass('hidden')
+                            console.log(`dot ${index + 3} is now showing`)
+                            console.log(`dot ${index - 2} is now hidden`)
+                        } else {
+                            //quick fix for middle dot being invisible unintentionally
+                            if ($(element).hasClass('hidden')) {
+                                $(element).removeClass('hidden')
+                                dotList.eq(index + 2).addClass('hidden')
+                            }
+                        }
+                       // if(index === dotList.length - 2) clickedButton.addClass('hidden');
+
+                    }
+                }
+            }
+        })
+    })
 
 
 
