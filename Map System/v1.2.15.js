@@ -188,6 +188,60 @@ $(document).ready(function () {
       });
       return geoData;
     };
+
+      let sliderController = () => {
+        let mapCard = $('#active-map-card');
+        let dotList = mapCard.find('.w-slider-dot');
+        let dotsLength = dotList.length;
+        let previousActive = 0;
+        let dotOnMiddle = false;
+        dotList.each((index, element) => {
+            if ($(element).hasClass('w-active')) {
+                previousActive = index;
+                //console.log(`previous active is slide ${index}`)
+            }
+            if (index > 4) $(element).addClass('hidden');
+        })
+        $('.map-slider_arrow').on('click', (e) => {
+            let clickedButton = $(e.target);
+            if (clickedButton.is('.map-slider_arrow-icon')) clickedButton = clickedButton.parent();
+
+            dotList.each((index, element) => {
+                if ($(element).hasClass('w-active')) {
+                    let currentActive = index;
+                    //console.log(`slide ${index} active`)
+                    if (clickedButton.hasClass('left')) {
+                        //show right arrow again
+                        if ($('.map-slider_arrow.right').hasClass('hidden')) $('.map-slider_arrow.right').removeClass('hidden');
+
+                        if ($(element).hasClass('hidden')) $(element).removeClass('hidden');
+                        if (dotList.eq(index - 3).length) {
+                            dotList.eq(index - 3).removeClass('hidden')
+                            dotList.eq(index + 2).addClass('hidden')
+                            //console.log(`dot ${index + 1} is now showing`)
+                            //console.log(`dot ${index - 2} is now hidden`)
+                        }
+                        if (index === 0) {
+                            clickedButton.addClass('hidden');
+                        }
+                    } else if (clickedButton.hasClass('right')) {
+                        if ($(element).hasClass('hidden')) $(element).removeClass('hidden');
+                        if ($('.map-slider_arrow.left').hasClass('hidden')) $('.map-slider_arrow.left').removeClass('hidden');
+                        if (dotList.eq(index + 3).length) {
+                            dotList.eq(index + 3).removeClass('hidden')
+                            dotList.eq(index - 2).addClass('hidden')
+                            //console.log(`dot ${index + 1} is now showing`)
+                            //console.log(`dot ${index - 2} is now hidden`)
+                        }
+                        if (index === dotList.length - 1) clickedButton.addClass('hidden');
+
+                    }
+                }
+            })
+
+        })
+    }
+
   
     const renderMap = () => {
       mapboxgl.accessToken =
@@ -435,17 +489,20 @@ $(document).ready(function () {
             )
             .addTo(map);
 
+            // APPENDING SLIDER TO MAP AND  RESETING CARD
             let mapCard = $('.map-card');
             mapCard.appendTo('#card-span');
+
+            sliderController();
+
+            $('body').on('click', (e) => {
+              let clickedButton = $(e.target);
+              if(clickedButton.is('.map-card *')) console.log('map card');
+            })
         });
   
         // ------------- REFRESH MAP --------------- //
-        /* 
-        What I was doing before:
-        - what I need is a initial run of the filter click
-        - 
-        
-        */
+       
        const filterInit = () => {
         let popUps = document.getElementsByClassName("mapboxgl-popup");
         if (popUps[0]) popUps[0].remove();

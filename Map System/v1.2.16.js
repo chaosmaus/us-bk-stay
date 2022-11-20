@@ -188,6 +188,81 @@ $(document).ready(function () {
       });
       return geoData;
     };
+
+    //Current context:
+    // - If card is closed and another opened, it works
+    // - If another card is opened while the first one is still opened, it doesn't work -> create logic for that.
+      let sliderController = () => {
+        
+        $('.map-card').appendTo('#card-span');
+        $('body').off('click.bodyClicked');
+        let mapCard = $('#active-map-card');
+        let dotList = mapCard.find('.w-slider-dot');
+        let dotsLength = dotList.length;
+        let previousActive = 0;
+        let dotOnMiddle = false;
+        dotList.each((index, element) => {
+            if ($(element).hasClass('w-active')) {
+                previousActive = index;
+                //console.log(`previous active is slide ${index}`)
+            }
+            if (index > 4) $(element).addClass('hidden');
+        })
+        $('.map-slider_arrow').on('click', (e) => {
+            let clickedButton = $(e.target);
+            if (clickedButton.is('.map-slider_arrow-icon')) clickedButton = clickedButton.parent();
+
+            dotList.each((index, element) => {
+                if ($(element).hasClass('w-active')) {
+                    let currentActive = index;
+                    //console.log(`slide ${index} active`)
+                    if (clickedButton.hasClass('left')) {
+                        //show right arrow again
+                        if ($('.map-slider_arrow.right').hasClass('hidden')) $('.map-slider_arrow.right').removeClass('hidden');
+
+                        if ($(element).hasClass('hidden')) $(element).removeClass('hidden');
+                        if (dotList.eq(index - 3).length) {
+                            dotList.eq(index - 3).removeClass('hidden')
+                            dotList.eq(index + 2).addClass('hidden')
+                            //console.log(`dot ${index + 1} is now showing`)
+                            //console.log(`dot ${index - 2} is now hidden`)
+                        }
+                        if (index === 0) {
+                            clickedButton.addClass('hidden');
+                        }
+                    } else if (clickedButton.hasClass('right')) {
+                        if ($(element).hasClass('hidden')) $(element).removeClass('hidden');
+                        if ($('.map-slider_arrow.left').hasClass('hidden')) $('.map-slider_arrow.left').removeClass('hidden');
+                        if (dotList.eq(index + 3).length) {
+                            dotList.eq(index + 3).removeClass('hidden')
+                            dotList.eq(index - 2).addClass('hidden')
+                            //console.log(`dot ${index + 1} is now showing`)
+                            //console.log(`dot ${index - 2} is now hidden`)
+                        }
+                        if (index === dotList.length - 1) clickedButton.addClass('hidden');
+
+                    }
+                }
+            })
+
+        })
+        
+
+        if(!($('.map-card').parent().is('.map-card_wrapper'))){
+          setTimeout(() => {
+            $('body').on('click.bodyClicked', (e) => {
+              let clickedButton = $(e.target);
+              if(!(clickedButton.is('.map-card *'))){
+                mapCard.appendTo('.map-card_wrapper');
+                console.log('body listener activated and card transfered')
+                console.log('-------------')
+              }
+            }) 
+          }, 10);
+          
+        }
+    }
+
   
     const renderMap = () => {
       mapboxgl.accessToken =
@@ -421,6 +496,7 @@ $(document).ready(function () {
   
         map.on("click", "unclustered-point", function (e) {
           const popUps = document.getElementsByClassName("mapboxgl-popup");
+          
           if (popUps[0]) popUps[0].remove();
              /* <a id='card-link_block' style="text-decoration: none;" href="${e.features[0].properties.link}">
               <h3>${e.features[0].properties.title}</h3>
@@ -430,22 +506,33 @@ $(document).ready(function () {
             .setLngLat(e.features[0].geometry.coordinates)
             .setHTML(
               `
-              <span id="card-span" ></span>
+              <span id="card-span" class="card-span"></span>
               `
             )
             .addTo(map);
 
-            let mapCard = $('.map-card');
-            mapCard.appendTo('#card-span');
+            // APPENDING SLIDER TO MAP AND  RESETING CARD
+            //let mapCard = $('.map-card');
+            
+            map.on("click", "unclustered-point", function (e) {
+              let secondClick = $(e.target)
+              console.log('second click')
+              //do a thing
+              
+            });
+            map.off("click", "unclustered-point", function (e) {
+              let secondClick = $(e.target)
+              console.log('second click')
+              //do a thing
+              
+            });
+            sliderController();
+
+            
         });
   
         // ------------- REFRESH MAP --------------- //
-        /* 
-        What I was doing before:
-        - what I need is a initial run of the filter click
-        - 
-        
-        */
+       
        const filterInit = () => {
         let popUps = document.getElementsByClassName("mapboxgl-popup");
         if (popUps[0]) popUps[0].remove();
