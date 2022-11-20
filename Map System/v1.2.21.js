@@ -166,6 +166,14 @@ $(document).ready(function () {
         if ($(`.item:eq(${index})`).hasClass("hidden")) {
           //console.log("property unavailable");
         } else {
+          // feeding slider images
+          let slidePropertyName = $(`.slide-house_name:contains("${$(element).find(".location-field_name").text()}")`);
+          let slideImages = slidePropertyName.siblings('img')
+          let slideImagesArray = [];
+          slideImages.each((index, element)=>{
+            slideImagesArray.push($(element).attr('src'))
+          })
+          
           geoData.push({
             type: "Feature",
             geometry: {
@@ -182,6 +190,7 @@ $(document).ready(function () {
               //address: $(element).find(".location-field_address").text(),
               imgURL: $(element).find(".location-field_img").attr("src"),
               link: $(element).find(".location-field_link").attr("href"),
+              slides: slideImagesArray 
             },
           });
         }
@@ -191,11 +200,11 @@ $(document).ready(function () {
 
     //Current context:
     // - If card is closed and another opened, it works
-    // - If another card is opened while the first one is still opened, it doesn't work -> create logic for that.
+    // - If another card is opened while the first one is still opened, it doesn't work -> create logic for that
 
       
 
-      let sliderController = () => {
+      let sliderController = (cardData) => {
         
         $('.map-card').appendTo('#card-span');
         $('body').off('click.bodyClicked');
@@ -527,8 +536,16 @@ $(document).ready(function () {
             // APPENDING SLIDER TO MAP AND  RESETING CARD
             map.on("click", "unclustered-point", unclusterClickHandler);
             map.on("click", mapClickHandler);
-            
-            sliderController();
+
+            let cardData = {}
+            let listingName = e.features[0].properties.title;
+            let slideImagesArray = e.features[0].properties.slides;
+            cardData = {
+              listingName,
+              slideImagesArray
+            }
+
+            sliderController(cardData);
 
             
         });

@@ -202,6 +202,15 @@ $(document).ready(function () {
         if ($(`.item:eq(${index})`).hasClass("hidden")) {
           //console.log("property unavailable");
         } else {
+          // feeding slider images
+          let slidePropertyName = $(`.slide-house_name:contains("${$(element).find(".location-field_name").text()}")`);
+          let slideImages = slidePropertyName.siblings('img')
+          let slideImagesArray = [];
+          slideImages.each((index, element)=>{
+            slideImagesArray.push($(element).attr('src'))
+          })
+          //console.log(slideImagesArray)
+
           geoData.push({
             type: "Feature",
             geometry: {
@@ -218,6 +227,7 @@ $(document).ready(function () {
               //address: $(element).find(".location-field_address").text(),
               imgURL: $(element).find(".location-field_img").attr("src"),
               link: $(element).find(".location-field_link").attr("href"),
+              slides: slideImagesArray 
             },
           });
         }
