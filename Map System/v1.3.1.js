@@ -14,12 +14,8 @@ $(document).ready(function () {
     };
   
     const priceController = (parsedProperties) => {
-      //console.log('entered Price Controller: ', parsedProperties )
   
-      /*    $('.items').each((i, el) => {
-        console.log('item each')
-      }) */
-
+  
 
       parsedProperties.forEach((element, index) => {
         //console.log(' element.id: ',  element.id)
@@ -461,7 +457,8 @@ $(document).ready(function () {
             "text-size": 18,
           },
         });
-  
+        //https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/62f81aef38a728ec53bd4b2b_House%20Icon%2050.png
+        //https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/637b97db26e11c513c2c6888_invisible-icon.png
         map.loadImage(
           "https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/62f81aef38a728ec53bd4b2b_House%20Icon%2050.png",
           function (error, image) {
@@ -646,6 +643,47 @@ $(document).ready(function () {
         map.on("style.load", function () {
           map.on("click", mouseClick);
         });
+
+        /* CUSTOM MARKER SYSTEM */
+
+        map.on('zoomstart', (e)=> {
+          console.log('mouse scrolled')
+
+          
+          for (const cluster of map.queryRenderedFeatures({  layers: [ 'unclustered-point'] })) {
+            let guestyId = cluster.properties.guesty;
+            console.log(`------------ ${cluster.properties.title} ------------`)
+            $('.marker-guesty').each((index, element) => {
+              if( $(element).text() === guestyId ){ 
+                if( $(element).parent().hasClass('hidden')) $(element).parent().removeClass('hidden');
+                console.log('showing: ', $(element).text() );
+              }else{
+                if( !($(element).parent().hasClass('hidden'))) $(element).parent().addClass('hidden');
+                //console.log('hiding: ', $(element).text() );
+              }
+            }) 
+
+            //$(`.marker-guesty:contains("${guestyId}")`).removeClass('hidden')
+            
+            
+          }
+          
+          
+
+        })
+
+        /**/ // add html markers to map
+        for (const feature of stores.features) {
+          // create a HTML element for each feature
+          const el = document.createElement('div');
+          //<div class="card-marker" >   <div class="card-marker_text" >$</div>  <div class="card-marker_text" id="markerPerNight" >1350</div>  </div>
+          el.className = 'card-marker';
+          el.innerHTML= `<div class="card-marker_text" >$</div>  <div class="card-marker_text" id="markerPerNight" >${feature.properties.cardPerNight}</div> <div class="marker-guesty">${feature.properties.guesty}</div> `
+
+          // make a marker for each feature and add to the map
+          new mapboxgl.Marker(el).setLngLat(feature.geometry.coordinates).addTo(map);
+        } 
+        
   
         buildLocationList(stores);
       });
