@@ -460,7 +460,7 @@ $(document).ready(function () {
         //https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/62f81aef38a728ec53bd4b2b_House%20Icon%2050.png
         //https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/637b97db26e11c513c2c6888_invisible-icon.png
         map.loadImage(
-          "https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/62f81aef38a728ec53bd4b2b_House%20Icon%2050.png",
+          "https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/637b97db26e11c513c2c6888_invisible-icon.png",
           function (error, image) {
             if (error) throw error;
             map.addImage("darty", image);
@@ -468,7 +468,7 @@ $(document).ready(function () {
         );
   
         map.loadImage(
-          "https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/62f81aef38a728ec53bd4b2b_House%20Icon%2050.png",
+          "https://uploads-ssl.webflow.com/62703dcda5e510755f5958e5/637b97db26e11c513c2c6888_invisible-icon.png",
           function (error, image) {
             if (error) throw error;
             map.addImage("fnac", image);
@@ -684,7 +684,7 @@ $(document).ready(function () {
           //<div class="card-marker" >   <div class="card-marker_text" >$</div>  <div class="card-marker_text" id="markerPerNight" >1350</div>  </div>
           el.className = 'card-marker';
           el.innerHTML= `<div class="card-marker_text" >$</div>  <div class="card-marker_text" id="markerPerNight" >${feature.properties.cardPerNight}</div> <div class="marker-guesty">${feature.properties.guesty}</div> `
-          el.classList.add('hidden')
+
           // make a marker for each feature and add to the map
           new mapboxgl.Marker(el).setLngLat(feature.geometry.coordinates).addTo(map);
         } 
