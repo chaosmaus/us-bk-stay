@@ -565,8 +565,8 @@ $(document).ready(function () {
           });
           $('.map-card').appendTo('.map-card_wrapper');
 
-          $('.card-span').each((index, element) => {
-            if (index !== storedElementIndex) $(element).parent().parent().remove();
+          $('.card-span').each((index, element)=>{
+            if(index !== storedElementIndex){ $(element).parent().parent().remove();}
           });
 
           $('.map-card').appendTo('#card-span')
@@ -691,7 +691,6 @@ $(document).ready(function () {
         // make a marker for each feature and add to the map
         new mapboxgl.Marker(el).setLngLat(feature.geometry.coordinates).addTo(map);
       }
-
       
       buildLocationList(stores);
     });
