@@ -314,28 +314,72 @@ $(document).ready(function () {
     function flyToStore(currentFeature) {
       map.flyTo({
         center: currentFeature.geometry.coordinates,
-        zoom: 12,
-        maxZoom: 15,
+        //zoom: 12,
+        //maxZoom: 12
       });
     }
 
     function createPopUp(currentFeature) {
-      //NEW SLIDER CARD STARTS HERE
-      let mapCard = document.getElementsByClassName('map-card');
-      document.getElementById('card-link_block').appendChild(mapCard.cloneNode(true));
+
+      // Second click Handler
+      if (!($('.map-card').parent().is('.map-card_wrapper'))) {
+        mapCard.appendTo('.map-card_wrapper');
+      }
 
 
-
-
+      //INIT POP UP
       const popUps = document.getElementsByClassName("mapboxgl-popup");
       if (popUps[0]) popUps[0].remove();
-
-      const popup = new mapboxgl.Popup({ closeOnClick: true })
+      const popup = new mapboxgl.Popup({ closeOnClick: false })
         .setLngLat(currentFeature.geometry.coordinates)
         .setHTML(
-          `<a  href="${currentFeature.properties.link}" style="text-decoration: none;" ><h3>${currentFeature.properties.title} </h3><img loading="lazy" class="popup_img" alt src="${currentFeature.properties.imgURL}" ></a>`
+          `
+              <span id="card-span" class="card-span"></span>
+              `
         )
         .addTo(map);
+
+
+
+      //NEW SLIDER CARD STARTS HERE
+      let cardData = {}
+      let listingName = currentFeature.properties.title;
+      let slideImagesArray = currentFeature.properties.slides;
+      let cardTotalPrice = currentFeature.properties.cardTotalPrice;
+      let cardPerNight = currentFeature.properties.cardPerNight;
+      let cardLink = currentFeature.properties.link;
+      //slideImagesArray = JSON.parse(slideImagesArray)
+      cardData = {
+        listingName,
+        slideImagesArray,
+        cardTotalPrice,
+        cardPerNight,
+        cardLink
+      }
+
+
+      sliderController(cardData)
+      //console.log(cardData)
+
+      //Delete old tips
+      const checkTipRemoval = () => {
+        if (!($('.card-span').find('.map-card').length)) {
+          let popUps = document.getElementsByClassName("mapboxgl-popup");
+          if (popUps[0]) popUps[0].remove();
+          //console.log('map card length', $('.card-span').find('.map-card').length)
+        }
+        clearInterval(refreshIntervalId)
+      }
+      // as soon as map-card no longer exists, remove it
+      let refreshIntervalId = setInterval(checkTipRemoval, 5);
+
+
+      //Load slider only after zoom finishes
+      const loadSlide = () => {
+
+        map.off('idle', loadSlide);
+      }
+      map.on('idle', loadSlide);
     }
 
     function buildLocationList(stores) {
@@ -593,7 +637,7 @@ $(document).ready(function () {
       }
 
       map.on("click", "unclustered-point", function (e) {
-        $('.mapboxgl-popup-tip').remove();
+        //$('.mapboxgl-popup-tip').remove();
         const popUps = document.getElementsByClassName("mapboxgl-popup");
         const popup = new mapboxgl.Popup({ closeOnClick: false })
           .setLngLat(e.features[0].geometry.coordinates)
@@ -692,7 +736,7 @@ $(document).ready(function () {
 
       $('.mapboxgl-canvas').on('click', (e) => {
         // if there are no cards, delete the entire pop up
-       
+
 
         const checkTipRemoval = () => {
           if (!($('.card-span').find('.map-card').length)) {
@@ -704,7 +748,7 @@ $(document).ready(function () {
         }
         // as soon as map-card no longer exists, remove it
         let refreshIntervalId = setInterval(checkTipRemoval, 5);
-        
+
       })
 
 
