@@ -432,6 +432,21 @@ $(document).ready(function () {
       zoom,
       isFinalCluster
     ) {
+      /* 
+        .cluster_map-card_wrapper
+        
+        .map_cluster-card
+        .cluster_item
+        .cluster_map-card_link
+        .cluster_text-wrapper
+        .map-card_link
+        .cluster-item_heading
+        .cluster_card-total_text
+        .cluster_card-per-night
+        .cluster_card-total_cost
+      */
+
+
       let oldCoord = [];
       let newCoord = [];
       let differentCoordCounts = 0;
@@ -451,21 +466,25 @@ $(document).ready(function () {
         const popUps = document.getElementsByClassName("mapboxgl-popup");
 
         if (popUps[0]) popUps[0].remove();
-        featuresObject.forEach((element, index) => { });
+        
 
         const popup = new mapboxgl.Popup()
           .setLngLat(newCoord)
           .setHTML(
-            ` <span id="cluster-pop-up" > </span>  `
+            ` <span id="cluster_card-span" class="cluster_card-span" ></span>  `
           )
           .addTo(map);
-        let popUp = document.getElementById("cluster-pop-up");
-        featuresObject.forEach((element, index) => {
-          popUp.insertAdjacentHTML(
-            "afterend",
-            `<a  id="card_link-block" href="${element.properties.link}" style="display:flex; border: 1px solid #f0f0f0; justify-content: space-between; text-decoration: none;" class="popup-wrapper"><h4>${element.properties.title}</h4> <img loading="lazy" class="popup_img" alt src="${element.properties.imgURL}" ></a>`
-          );
-        });
+
+          if ($('.cluster_map-card_wrapper').find('.cluster_item').length) {
+            console.log('cluster card')
+            $('.cluster_map-card_wrapper').find('.cluster_item').appendTo('.cluster_card-span')
+            $('.cluster_card-span').parent().css('box-shadow', '0 0 0 rgb(0 0 0 / 0%)')
+            featuresObject.forEach((element, index) => { 
+              
+            });
+          }
+
+        
       } else {
         console.log("map zoom level: ", map.getZoom());
       }
@@ -756,7 +775,7 @@ $(document).ready(function () {
 
 
         const checkTipRemoval = () => {
-          if (!($('.card-span').find('.map-card').length)  && !($('#cluster-pop-up').length ) ) {
+          if (!($('.card-span').find('.map-card').length)  && !($('#cluster_card-span').length ) ) {
             let popUps = document.getElementsByClassName("mapboxgl-popup");
             if (popUps[0]) popUps[0].remove();
             //console.log('map card length', $('.card-span').find('.map-card').length)
