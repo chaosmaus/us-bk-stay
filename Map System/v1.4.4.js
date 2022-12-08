@@ -481,7 +481,7 @@ $(document).ready(function () {
             featuresObject.forEach((element, index) => { 
               $('.cluster_map-card_wrapper').find('.cluster_item').clone().appendTo('.cluster_card-span')
               $('.cluster_item').eq(index).find('.cluster-item_heading').text(element.properties.title)
-              $('.cluster_item').eq(index).find('.cluster-item_heading').attr('href', element.properties.title)
+              $('.cluster_item').eq(index).find('.cluster-item_heading').parent().attr('href', element.properties.title)
               $('.cluster_item').eq(index).find('.cluster_item-img').attr('srcset', element.properties.imgURL)
               console.log('index: ',index,'cardPerNight', element.properties.cardPerNight);
               console.log('index: ',index,'cardTotalPrice', element.properties.cardTotalPrice);
