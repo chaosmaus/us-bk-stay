@@ -477,10 +477,16 @@ $(document).ready(function () {
 
           if ($('.cluster_map-card_wrapper').find('.cluster_item').length) {
             console.log('cluster card')
-            $('.cluster_map-card_wrapper').find('.cluster_item').appendTo('.cluster_card-span')
             $('.cluster_card-span').parent().css('box-shadow', '0 0 0 rgb(0 0 0 / 0%)')
             featuresObject.forEach((element, index) => { 
-              
+              $('.cluster_map-card_wrapper').find('.cluster_item').clone().appendTo('.cluster_card-span')
+              $('.cluster_item').eq(index).find('.cluster-item_heading').text(element.properties.title)
+              $('.cluster_item').eq(index).find('.cluster-item_heading').attr('href', element.properties.title)
+              $('.cluster_item').eq(index).find('.cluster_item-img').attr('srcset', element.properties.imgURL)
+              console.log('index: ',index,'cardPerNight', element.properties.cardPerNight);
+              console.log('index: ',index,'cardTotalPrice', element.properties.cardTotalPrice);
+              $('.cluster_item').eq(index).find('#clusterCardPerNight').text(element.properties.cardPerNight)
+              $('.cluster_item').eq(index).find('#clusterCardTotalPrice').text(element.properties.cardTotalPrice)
             });
           }
 
